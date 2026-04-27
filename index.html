@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ElectIQ — Your AI-powered guide to understanding elections, voting timelines, and the democratic process. Powered by Google Gemini." />
+  <meta name="keywords" content="election guide, voting process, democracy, AI assistant, Gemini" />
+  <meta property="og:title" content="ElectIQ — Election Process Assistant" />
+  <meta property="og:description" content="Understand elections step-by-step with an AI-powered interactive guide." />
+  <title>ElectIQ — Election Process Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside id="sidebar" class="sidebar" role="complementary" aria-label="Election Timeline">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-icon" aria-hidden="true">⚖️</div>
+          <div class="logo-text">
+            <span class="logo-title">ElectIQ</span>
+            <span class="logo-subtitle">Election Assistant</span>
+          </div>
+        </div>
+        <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle sidebar">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+      <div class="sidebar-body">
+        <h2 class="sidebar-section-title">📋 Election Journey</h2>
+        <nav class="timeline" role="navigation" aria-label="Election stages">
+          <div class="timeline-item active" data-stage="0" role="button" tabindex="0" aria-selected="true">
+            <div class="timeline-dot"><span>1</span></div>
+            <div class="timeline-content">
+              <strong>Voter Registration</strong>
+              <span>Eligibility &amp; Sign-up</span>
+            </div>
+          </div>
+          <div class="timeline-item" data-stage="1" role="button" tabindex="0">
+            <div class="timeline-dot"><span>2</span></div>
+            <div class="timeline-content">
+              <strong>Candidate Filing</strong>
+              <span>Who's Running?</span>
+            </div>
+          </div>
+          <div class="timeline-item" data-stage="2" role="button" tabindex="0">
+            <div class="timeline-dot"><span>3</span></div>
+            <div class="timeline-content">
+              <strong>Primary Elections</strong>
+              <span>Party Selection</span>
+            </div>
+          </div>
+          <div class="timeline-item" data-stage="3" role="button" tabindex="0">
+            <div class="timeline-dot"><span>4</span></div>
+            <div class="timeline-content">
+              <strong>Campaigning</strong>
+              <span>Debates &amp; Outreach</span>
+            </div>
+          </div>
+          <div class="timeline-item" data-stage="4" role="button" tabindex="0">
+            <div class="timeline-dot"><span>5</span></div>
+            <div class="timeline-content">
+              <strong>Election Day</strong>
+              <span>Casting Your Vote</span>
+            </div>
+          </div>
+          <div class="timeline-item" data-stage="5" role="button" tabindex="0">
+            <div class="timeline-dot"><span>6</span></div>
+            <div class="timeline-content">
+              <strong>Vote Counting</strong>
+              <span>Tallying Results</span>
+            </div>
+          </div>
+          <div class="timeline-item" data-stage="6" role="button" tabindex="0">
+            <div class="timeline-dot"><span>7</span></div>
+            <div class="timeline-content">
+              <strong>Certification</strong>
+              <span>Official Results</span>
+            </div>
+          </div>
+          <div class="timeline-item" data-stage="7" role="button" tabindex="0">
+            <div class="timeline-dot"><span>8</span></div>
+            <div class="timeline-content">
+              <strong>Inauguration</strong>
+              <span>Transfer of Power</span>
+            </div>
+          </div>
+        </nav>
+
+        <div class="sidebar-api-section">
+          <h3 class="api-section-title">🔑 Gemini API Key</h3>
+          <p class="api-section-desc">Enter your Google Gemini API key to activate AI responses.</p>
+          <div class="api-input-group">
+            <input
+              type="password"
+              id="api-key-input"
+              class="api-key-input"
+              placeholder="AIza..."
+              aria-label="Google Gemini API Key"
+              autocomplete="off"
+            />
+            <button id="save-api-key" class="btn-save-key" aria-label="Save API Key">Save</button>
+          </div>
+          <div id="api-status" class="api-status" role="status" aria-live="polite"></div>
+          <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="get-key-link">
+            Get a free API key →
+          </a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main id="main-content" class="main-content" role="main">
+
+      <!-- Stage Info Banner -->
+      <div id="stage-banner" class="stage-banner" role="region" aria-label="Current stage information">
+        <div class="stage-banner-inner">
+          <div class="stage-icon" id="stage-icon" aria-hidden="true">📝</div>
+          <div class="stage-text">
+            <h1 id="stage-title" class="stage-title">Voter Registration</h1>
+            <p id="stage-desc" class="stage-desc">Learn who can vote, how to register, and key deadlines.</p>
+          </div>
+          <div class="stage-progress" aria-label="Stage 1 of 8">
+            <span id="stage-progress-label" class="stage-progress-label">Stage 1 of 8</span>
+            <div class="stage-progress-bar" role="progressbar" aria-valuenow="12" aria-valuemin="0" aria-valuemax="100">
+              <div id="stage-progress-fill" class="stage-progress-fill" style="width: 12%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Prompt Cards -->
+      <section class="quick-prompts" aria-label="Quick questions">
+        <h2 class="section-label">💡 Ask about this stage</h2>
+        <div id="quick-prompt-grid" class="quick-prompt-grid" role="list">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- Chat Area -->
+      <section class="chat-section" aria-label="Chat with election assistant">
+        <div id="chat-messages" class="chat-messages" role="log" aria-live="polite" aria-label="Conversation">
+          <!-- Welcome message injected by JS -->
+        </div>
+
+        <!-- Typing indicator -->
+        <div id="typing-indicator" class="typing-indicator" aria-live="polite" aria-label="Assistant is typing" hidden>
+          <div class="typing-bubble">
+            <span></span><span></span><span></span>
+          </div>
+          <span class="typing-text">ElectIQ is thinking…</span>
+        </div>
+
+        <!-- Input Bar -->
+        <div class="chat-input-bar" role="form" aria-label="Message input">
+          <div class="input-wrapper">
+            <textarea
+              id="chat-input"
+              class="chat-input"
+              placeholder="Ask me anything about elections…"
+              rows="1"
+              aria-label="Type your message"
+              aria-multiline="true"
+            ></textarea>
+            <button id="send-btn" class="send-btn" aria-label="Send message" disabled>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </div>
+          <div class="chat-input-footer">
+            <span class="powered-by">Powered by <strong>Google Gemini</strong></span>
+            <button id="clear-chat" class="btn-clear" aria-label="Clear conversation">Clear chat</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

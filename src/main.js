@@ -1,6 +1,6 @@
 import './style.css';
 import { stages } from './data.js';
-import { sendMessage, validateApiKey } from './gemini.js';
+import { streamMessage, validateApiKey } from './gemini.js';
 
 // ===== STATE =====
 let apiKey = localStorage.getItem('electiq_api_key') || '';
@@ -104,10 +104,15 @@ function appendMessage(role, text) {
     <div class="message-body">
       <div class="message-bubble">${bubble}</div>
       <div class="message-time">${getTime()}</div>
+      <div class="suggestions-container" style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;"></div>
     </div>`;
 
   chatMessages.appendChild(div);
   chatMessages.scrollTop = chatMessages.scrollHeight;
+  return {
+    bubble: div.querySelector('.message-bubble'),
+    suggestions: div.querySelector('.suggestions-container')
+  };
 }
 
 function appendErrorMessage(text) {
@@ -140,11 +145,41 @@ async function submitMessage(text) {
   chatMessages.scrollTop = chatMessages.scrollHeight;
 
   try {
-    const reply = await sendMessage(apiKey, chatHistory, msg);
+    const stageContext = {
+      title: stages[currentStage].title,
+      desc: stages[currentStage].desc
+    };
+
+    // Create empty assistant message bubble for streaming
+    typingIndicator.hidden = true;
+    const { bubble, suggestions } = appendMessage('assistant', '');
+
+    const reply = await streamMessage(apiKey, chatHistory, msg, stageContext, (chunk) => {
+      const parts = chunk.split('===SUGGESTIONS===');
+      bubble.innerHTML = formatMarkdown(parts[0].trim());
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+
     chatHistory.push({ role: 'user', text: msg });
     chatHistory.push({ role: 'model', text: reply });
-    typingIndicator.hidden = true;
-    appendMessage('assistant', reply);
+    
+    // Parse suggestions
+    const parts = reply.split('===SUGGESTIONS===');
+    if (parts.length > 1) {
+      try {
+        const suggs = JSON.parse(parts[1].trim());
+        suggs.forEach(s => {
+          const btn = document.createElement('button');
+          btn.className = 'quick-prompt-btn suggestion-chip';
+          btn.textContent = s;
+          btn.onclick = () => submitMessage(s);
+          suggestions.appendChild(btn);
+        });
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      } catch(e) {
+        // Failed to parse suggestions json
+      }
+    }
   } catch (err) {
     typingIndicator.hidden = true;
     appendErrorMessage(err.message || 'Something went wrong. Please try again.');

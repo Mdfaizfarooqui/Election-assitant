@@ -647,6 +647,26 @@ body::before {
 .welcome-card p { font-size: 14px; color: var(--text-secondary); margin-bottom: 10px; }
 .welcome-card p:last-child { margin-bottom: 0; }
 
+/* ===== SUGGESTION CHIPS ===== */
+.suggestion-chip {
+  background: rgba(6, 182, 212, 0.1);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  font-weight: 500;
+  border-radius: 99px;
+  padding: 6px 12px;
+  font-size: 11px;
+  opacity: 0.9;
+  transition: var(--transition);
+  margin-top: 4px;
+}
+.suggestion-chip:hover {
+  background: rgba(6, 182, 212, 0.2);
+  border-color: rgba(6, 182, 212, 0.5);
+  transform: translateY(-2px);
+  color: #fff;
+}
+
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }

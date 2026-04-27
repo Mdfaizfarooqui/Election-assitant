@@ -10,7 +10,15 @@
   "devDependencies": {
     "vite": "^5.2.0"
   },
-  "keywords": ["election", "assistant", "gemini", "ai"],
+  "keywords": [
+    "election",
+    "assistant",
+    "gemini",
+    "ai"
+  ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@heyputer/puter.js": "^2.2.15"
+  }
 }

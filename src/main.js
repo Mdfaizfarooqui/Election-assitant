@@ -1,9 +1,8 @@
 import './style.css';
 import { stages } from './data.js';
-import { streamMessage, validateApiKey } from './openai.js';
+import { streamMessage } from './puter.js';
 
 // ===== STATE =====
-let apiKey = import.meta.env.VITE_OPENAI_API_KEYS || localStorage.getItem('electiq_openai_key') || '';
 let currentStage = 0;
 let chatHistory = []; // [{role, text}]
 let isLoading = false;
@@ -14,9 +13,6 @@ const chatMessages   = $('chat-messages');
 const chatInput      = $('chat-input');
 const sendBtn        = $('send-btn');
 const typingIndicator= $('typing-indicator');
-const apiKeyInput    = $('api-key-input');
-const saveApiKeyBtn  = $('save-api-key');
-const apiStatus      = $('api-status');
 const quickGrid      = $('quick-prompt-grid');
 const stageIcon      = $('stage-icon');
 const stageTitle     = $('stage-title');
@@ -30,7 +26,6 @@ const timelineItems  = document.querySelectorAll('.timeline-item');
 
 // ===== INIT =====
 function init() {
-  if (apiKey) apiKeyInput.value = apiKey;
   renderStage(0);
   renderWelcomeMessage();
   bindEvents();
@@ -85,7 +80,6 @@ function renderWelcomeMessage() {
         <h3>Welcome to ElectIQ! 🗳️</h3>
         <p>I'm your AI-powered guide to understanding the <strong>democratic election process</strong> — from registering to vote all the way to inauguration day.</p>
         <p>Click any stage in the sidebar to jump to that part of the journey, use the quick prompts above, or just ask me anything!</p>
-        <p><em>Tip: Enter your OpenAI API keys (comma separated) in the sidebar or .env to enable AI-powered answers.</em></p>
       </div>
       <div class="message-time">${getTime()}</div>
     </div>`;
@@ -154,7 +148,7 @@ async function submitMessage(text) {
     typingIndicator.hidden = true;
     const { bubble, suggestions } = appendMessage('assistant', '');
 
-    const reply = await streamMessage(apiKey, chatHistory, msg, stageContext, (chunk) => {
+    const reply = await streamMessage(chatHistory, msg, stageContext, (chunk) => {
       const parts = chunk.split('===SUGGESTIONS===');
       bubble.innerHTML = formatMarkdown(parts[0].trim());
       chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -189,41 +183,6 @@ async function submitMessage(text) {
   }
 }
 
-// ===== API KEY =====
-async function handleSaveApiKey() {
-  const key = apiKeyInput.value.trim();
-  if (!key) {
-    setApiStatus('Please enter an API key.', 'error');
-    return;
-  }
-
-  saveApiKeyBtn.textContent = 'Checking…';
-  saveApiKeyBtn.disabled = true;
-  setApiStatus('', '');
-
-  try {
-    const valid = await validateApiKey(key);
-    if (valid) {
-      apiKey = key;
-      localStorage.setItem('electiq_openai_key', key);
-      setApiStatus('✓ API key saved!', 'success');
-    } else {
-      setApiStatus('✗ Invalid API key. Please try again.', 'error');
-    }
-  } catch {
-    setApiStatus('✗ Could not verify key. Check your connection.', 'error');
-  } finally {
-    saveApiKeyBtn.textContent = 'Save';
-    saveApiKeyBtn.disabled = false;
-  }
-}
-
-function setApiStatus(msg, type) {
-  apiStatus.textContent = msg;
-  apiStatus.className = `api-status${type ? ' ' + type : ''}`;
-}
-
-// ===== HELPERS =====
 function formatMarkdown(text) {
   return text
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -269,12 +228,6 @@ function bindEvents() {
   chatInput.addEventListener('input', () => {
     autoResizeTextarea();
     sendBtn.disabled = !chatInput.value.trim();
-  });
-
-  // API key
-  saveApiKeyBtn.addEventListener('click', handleSaveApiKey);
-  apiKeyInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') handleSaveApiKey();
   });
 
   // Timeline navigation

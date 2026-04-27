@@ -15,7 +15,7 @@ const GEMINI_GENERATE_URL = 'https://generativelanguage.googleapis.com/v1beta/mo
 export async function streamMessage(apiKey, history, userMessage, stageContext, onChunk) {
   if (!apiKey) throw new Error('No API key provided. Please enter your Gemini API key in the sidebar.');
 
-  const contextStr = \`[System Context: The user is currently viewing the "\${stageContext.title}" stage. Description: \${stageContext.desc}]\n\n\`;
+  const contextStr = `[System Context: The user is currently viewing the "${stageContext.title}" stage. Description: ${stageContext.desc}]\n\n`;
   const augmentedMessage = history.length === 0 ? (contextStr + userMessage) : userMessage;
 
   // Build contents array: history + new message
@@ -36,7 +36,7 @@ export async function streamMessage(apiKey, history, userMessage, stageContext, 
     },
   };
 
-  const response = await fetch(\`\${GEMINI_STREAM_URL}&key=\${apiKey}\`, {
+  const response = await fetch(`${GEMINI_STREAM_URL}&key=${apiKey}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
@@ -44,7 +44,7 @@ export async function streamMessage(apiKey, history, userMessage, stageContext, 
 
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
-    const msg = err?.error?.message || \`HTTP \${response.status}\`;
+    const msg = err?.error?.message || `HTTP ${response.status}`;
     throw new Error(msg);
   }
 
@@ -90,7 +90,7 @@ export async function validateApiKey(apiKey) {
     contents: [{ role: 'user', parts: [{ text: 'Hi' }] }],
     generationConfig: { maxOutputTokens: 5 },
   };
-  const response = await fetch(\`\${GEMINI_GENERATE_URL}?key=\${apiKey}\`, {
+  const response = await fetch(`${GEMINI_GENERATE_URL}?key=${apiKey}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),

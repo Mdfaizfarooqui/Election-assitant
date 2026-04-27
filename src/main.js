@@ -1,9 +1,9 @@
 import './style.css';
 import { stages } from './data.js';
-import { streamMessage, validateApiKey } from './gemini.js';
+import { streamMessage, validateApiKey } from './openai.js';
 
 // ===== STATE =====
-let apiKey = localStorage.getItem('electiq_api_key') || '';
+let apiKey = import.meta.env.VITE_OPENAI_API_KEYS || localStorage.getItem('electiq_openai_key') || '';
 let currentStage = 0;
 let chatHistory = []; // [{role, text}]
 let isLoading = false;
@@ -85,7 +85,7 @@ function renderWelcomeMessage() {
         <h3>Welcome to ElectIQ! 🗳️</h3>
         <p>I'm your AI-powered guide to understanding the <strong>democratic election process</strong> — from registering to vote all the way to inauguration day.</p>
         <p>Click any stage in the sidebar to jump to that part of the journey, use the quick prompts above, or just ask me anything!</p>
-        <p><em>Tip: Enter your Gemini API key in the sidebar to enable AI-powered answers.</em></p>
+        <p><em>Tip: Enter your OpenAI API keys (comma separated) in the sidebar or .env to enable AI-powered answers.</em></p>
       </div>
       <div class="message-time">${getTime()}</div>
     </div>`;
@@ -205,7 +205,7 @@ async function handleSaveApiKey() {
     const valid = await validateApiKey(key);
     if (valid) {
       apiKey = key;
-      localStorage.setItem('electiq_api_key', key);
+      localStorage.setItem('electiq_openai_key', key);
       setApiStatus('✓ API key saved!', 'success');
     } else {
       setApiStatus('✗ Invalid API key. Please try again.', 'error');

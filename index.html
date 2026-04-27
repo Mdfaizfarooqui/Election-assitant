@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="ElectIQ — Your AI-powered guide to understanding elections, voting timelines, and the democratic process. Powered by Google Gemini." />
-  <meta name="keywords" content="election guide, voting process, democracy, AI assistant, Gemini" />
+  <meta name="description" content="ElectIQ — Your AI-powered guide to understanding elections, voting timelines, and the democratic process. Powered by OpenAI." />
+  <meta name="keywords" content="election guide, voting process, democracy, AI assistant, OpenAI, ChatGPT" />
   <meta property="og:title" content="ElectIQ — Election Process Assistant" />
   <meta property="og:description" content="Understand elections step-by-step with an AI-powered interactive guide." />
   <title>ElectIQ — Election Process Assistant</title>
@@ -93,21 +93,21 @@
         </nav>
 
         <div class="sidebar-api-section">
-          <h3 class="api-section-title">🔑 Gemini API Key</h3>
-          <p class="api-section-desc">Enter your Google Gemini API key to activate AI responses.</p>
+          <h3 class="api-section-title">🔑 OpenAI API Keys</h3>
+          <p class="api-section-desc">Enter your OpenAI API keys (comma separated) to activate AI responses.</p>
           <div class="api-input-group">
             <input
               type="password"
               id="api-key-input"
               class="api-key-input"
-              placeholder="AIza..."
-              aria-label="Google Gemini API Key"
+              placeholder="sk-..., sk-..."
+              aria-label="OpenAI API Keys"
               autocomplete="off"
             />
             <button id="save-api-key" class="btn-save-key" aria-label="Save API Key">Save</button>
           </div>
           <div id="api-status" class="api-status" role="status" aria-live="polite"></div>
-          <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="get-key-link">
+          <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" class="get-key-link">
             Get a free API key →
           </a>
         </div>
@@ -175,7 +175,7 @@
             </button>
           </div>
           <div class="chat-input-footer">
-            <span class="powered-by">Powered by <strong>Google Gemini</strong></span>
+            <span class="powered-by">Powered by <strong>OpenAI</strong></span>
             <button id="clear-chat" class="btn-clear" aria-label="Clear conversation">Clear chat</button>
           </div>
         </div>
